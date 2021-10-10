@@ -27,4 +27,22 @@ public interface IGameRepository extends JpaRepository<Game, Long> {
     @Query(value ="UPDATE game " +
             "SET `name` =?1,content = ?2,image = ?3,gaming=?4,trailer=?5,game_type_id=?6 WHERE game.game_id = ?7" , nativeQuery = true)
     void updateGame(String name, String content, String image, Long gaming, String trailer, int gameTypeId, Long gameId);
+
+
+    //    Creator: Thúy
+    @Query(value = "SELECT * FROM game WHERE flag_delete = 0", nativeQuery = true)
+    Page<Game> getAllGame(Pageable pageable);
+
+    @Query(value = "SELECT * FROM game " +
+            "join game_type on game.game_type_id = game_type.game_type_id " +
+            "WHERE ( game.`name` like ?1 ) and (game_type.`name` like ?2 ) and game.flag_delete = 0", nativeQuery = true)
+    Page<Game> getGameBySearching(Pageable pageable, String name, String gameType);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE game SET flag_delete = 1  WHERE game_id = ?1 ", nativeQuery = true)
+    void deleteGameFlag(Long gameId);
+
+    @Query(value = "SELECT * FROM game WHERE flag_delete = 0 order by gaming desc limit 3", nativeQuery = true)
+    List<Game> searchTopGame();
 }

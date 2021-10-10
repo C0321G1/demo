@@ -15,4 +15,13 @@ public interface IGameService {
     void saveGame(Game game);
 
     void updateGame(Game game);
+
+    //    Creator: Thúy
+    Page<Game> getAllGame(Pageable pageable);
+
+    Page<Game> getGameBySearching(Pageable pageable, String name, String gameType);
+
+    void deleteGameFlag(Long gameId);
+
+    List<Game> searchTopGame();
 }
