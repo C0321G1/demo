@@ -16,13 +16,24 @@ public class GameServiceImpl implements IGameService {
     @Autowired
     private IGameRepository gameRepository;
 
-    //    Creator: Pháp
+// Creator: Nhung
 
     @Override
     public Optional<Game> findById(Long id) {
         return gameRepository.findById(id);
     }
 
+    @Override
+    public void saveGame(Game game) {
+        gameRepository.saveGame(game.getName().trim(), game.getContent().trim(), game.getImage(), game.getGaming(), game.getTrailer().trim(), game.getGameType().getGameTypeId(), game.getFlagDelete());
+    }
+
+    @Override
+    public void updateGame(Game game) {
+        gameRepository.updateGame(game.getName().trim(), game.getContent().trim(), game.getImage(), game.getGaming(), game.getTrailer().trim(), game.getGameType().getGameTypeId(), game.getGameId());
+    }
+
+    //    Creator: Thúy
     @Override
     public Page<Game> getAllGame(Pageable pageable) {
         return gameRepository.getAllGame(pageable);

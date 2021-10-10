@@ -1,5 +1,6 @@
 package c0321g1_gaming.controller.game;
 
+import antlr.collections.List;
 import c0321g1_gaming.dto.game.GameDto;
 import c0321g1_gaming.model.entity.game.Game;
 import c0321g1_gaming.model.service.game.IGameService;
@@ -15,10 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -26,6 +24,7 @@ import java.util.Optional;
 public class GameRestController {
     @Autowired
     private IGameService gameService;
+
 
     //        Creator: Pháp
     @GetMapping
@@ -82,6 +81,45 @@ public class GameRestController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
             gameService.deleteGameFlag(id);
+
+    // Creator: Nhung
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> saveGame(@Valid @RequestBody GameDto gameDto) {
+        Game game = new Game();
+        gameDto.setFlagDelete(0);
+        BeanUtils.copyProperties(gameDto, game);
+        gameService.saveGame(game);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<Game> updateGame(@Valid @RequestBody GameDto gameDto,
+                                           @PathVariable Long id) {
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Optional<Game> game = gameService.findById(id);
+        if (!game.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            gameDto.setGameId(game.get().getGameId());
+            BeanUtils.copyProperties(gameDto, game.get());
+            gameService.updateGame(game.get());
+>>>>>>> b51c7c58f44bbf1dec82789c2a2896f2b06e9e14
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }

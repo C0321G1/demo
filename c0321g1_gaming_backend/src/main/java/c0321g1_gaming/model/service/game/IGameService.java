@@ -9,10 +9,14 @@ import java.util.Optional;
 
 public interface IGameService {
 
-    //    Creator: Pháp
-
+    // Creator: Nhung
     Optional<Game> findById(Long gameId);
 
+    void saveGame(Game game);
+
+    void updateGame(Game game);
+
+    //    Creator: Thúy
     Page<Game> getAllGame(Pageable pageable);
 
     Page<Game> getGameBySearching(Pageable pageable, String name, String gameType);
