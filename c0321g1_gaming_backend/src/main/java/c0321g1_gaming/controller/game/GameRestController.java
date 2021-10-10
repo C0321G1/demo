@@ -26,66 +26,6 @@ import java.util.Optional;
 public class GameRestController {
     @Autowired
     private IGameService gameService;
-
-    //        Creator: Thúy
-    @GetMapping
-    public ResponseEntity<Page<Game>> getListGame(@PageableDefault(size = 8) Pageable pageable) {
-        Page<Game> gameList = gameService.getAllGame(pageable);
-        if (gameList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(gameList, HttpStatus.OK);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<Page<Game>> searchGame(@PageableDefault(size = 8) Pageable pageable,
-                                                 @RequestParam String name, @RequestParam String gameType) {
-        Page<Game> gameList = gameService.getGameBySearching(pageable, name, gameType);
-        if (gameList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(gameList, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<Game> findById(@PathVariable Long id) {
-        if (id == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Optional<Game> gameOptional = gameService.findById(id);
-        if (!gameOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(gameOptional.get(), HttpStatus.OK);
-        }
-    }
-
-    @GetMapping("/top")
-    public ResponseEntity<List<Game>> getTopGame() {
-        List<Game> gameList = gameService.searchTopGame();
-        if (gameList.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(gameList, HttpStatus.OK);
-    }
-
-    @PatchMapping(value = "delete/{id}")
-    public ResponseEntity<Game> deleteGame(@PathVariable Long id) {
-        if (id == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Optional<Game> gameOptional = gameService.findById(id);
-        if (!gameOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            if(gameOptional.get().getFlagDelete() == 1) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            gameService.deleteGameFlag(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-    }
-
     // Creator: Nhung
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
